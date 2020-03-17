@@ -1,0 +1,22 @@
+.App {
+  text-align: center;
+  padding: 3% 6%;
+}
+
+.details {
+  &Main {
+    border: 1px solid black ;
+    border-radius: 5px;
+    margin: 5%;
+    padding: 2% 3%;
+  }
+  &Label {
+    text-align: center;
+    padding: 0 0 1% 0;
+    font-weight: bold;
+  }
+  &Value {
+    text-align: center;
+    padding: 1% 0 0 0;
+  }
+}
