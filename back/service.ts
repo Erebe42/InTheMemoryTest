@@ -24,23 +24,19 @@ export class Service {
     return data[0].dataValues.totalEarn;
   };
 
-  public getAverageOrderPrice = async (countries?: string[]) => {
-    let whereCondition = '';
+  public getOrderAmount = async (countries?: string[]) => {
+    const whereCondition = {} as { country?: any };
     if (countries && countries.length > 0) {
-      whereCondition = 'WHERE (' + countries.map((country) => `"BoughtProducts"."country" = '${country}'`).join(' OR ') + ')';
+      whereCondition.country = { [Op.or]: countries };
     }
 
-    const data = await db.sequelize.query(
-      `
-        SELECT ROUND(AVG(price), 2) AS "averagePrice"
-        FROM (SELECT SUM(ROUND("unitPrice"::numeric * "quantity"::numeric, 2)) as price
-        FROM "BoughtProducts"
-        ${whereCondition}
-        GROUP BY "orderId") AS orderPrice;
-      `
-    );
+    const data = await this.model.count({
+      distinct: true,
+      col: 'BoughtProduct.orderId',
+      where: whereCondition,
+    });
 
-    return data[0][0].averagePrice;
+    return data;
   }
 
   public getCustomerAmount = async (countries?: string[]) => {

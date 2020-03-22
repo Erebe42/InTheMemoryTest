@@ -10,12 +10,12 @@ export class Controller {
       console.log(req.query);
       const { countries } = req.query;
       Promise.all([
+        service.getOrderAmount(countries),
         service.getTotalResult(countries),
-        service.getAverageOrderPrice(countries),
         service.getCustomerAmount(countries),
         service.getRevenuPerMonth(countries),
-      ]).then(([totalEarn, averagePrice, customerAmount, revenuePerMonth]) => {
-        res.send({totalEarn, averagePrice, customerAmount, revenuePerMonth});
+      ]).then(([orderAmount, totalEarn, customerAmount, revenuePerMonth]) => {
+        res.send({totalEarn, averagePrice: Number((totalEarn / orderAmount).toFixed(2)), customerAmount, revenuePerMonth});
       }).catch((error) => {
         console.error(error);
         res.status(400).end();
