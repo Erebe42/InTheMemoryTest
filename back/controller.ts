@@ -7,10 +7,30 @@ export class Controller {
     const service = new Service();
 
     this.router.get('/', async (req, res) => {
-      const totalPrice = await service.getTotalResult();
-      const averagePrice = await service.getAverageOrderPrice();
-      const customerAmount = await service.getCustomerAmount();
-      res.send({totalPrice, averagePrice, customerAmount});
+      console.log(req.query);
+      const { countries } = req.query;
+      Promise.all([
+        service.getTotalResult(countries),
+        service.getAverageOrderPrice(countries),
+        service.getCustomerAmount(countries),
+        service.getRevenuPerMonth(countries),
+      ]).then(([totalEarn, averagePrice, customerAmount, revenuePerMonth]) => {
+        res.send({totalEarn, averagePrice, customerAmount, revenuePerMonth});
+      }).catch((error) => {
+        console.error(error);
+        res.status(400).end();
+      });
+    });
+
+    this.router.get('/countries', async (req, res) => {
+      Promise.all([
+        service.getCountries(),
+      ]).then(([countries]) => {
+        res.send({countries: countries.map(({country}) => country)});
+      }).catch((error) => {
+        console.error(error);
+        res.status(400).end();
+      });
     });
   }
 }
