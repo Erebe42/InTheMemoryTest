@@ -14,7 +14,7 @@ const App = () => {
   const [totalEarn, setTotalEarn] = useState(0);
   const [averageRevenue, setAverageRevenue] = useState(0);
   const [uniqueCustomersCount, setUniqueCustomersCount] = useState(0);
-  const [revenuePerMonth, setRevenuePerMonth] = useState(0);
+  const [revenuePerMonth, setRevenuePerMonth] = useState([] as any[]);
 
   const [selectedCountries, setSelectedCountries] = useState([] as string[]);
 
@@ -32,7 +32,9 @@ const App = () => {
         setTotalEarn(Number(data.totalEarn));
         setAverageRevenue(Number(data.averagePrice));
         setUniqueCustomersCount(Number(data.customerAmount));
-        setRevenuePerMonth(data.revenuePerMonth);
+        setRevenuePerMonth(data.revenuePerMonth.map((elem: any) => ({
+          date: elem.date, revenue: Number(elem.revenue)
+        })));
       }
     });
   }, [selectedCountries]);
